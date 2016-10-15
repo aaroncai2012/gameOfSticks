@@ -6,7 +6,9 @@
 void record(int data[][3], int log[]) {
 	
 	for(int i = 0; i < 20; i++) {
-		++data[i][log[i]];
+		if(log[i] != 0){
+			++data[i][log[i] - 1];
+		}
 	}
 	std::ofstream fout;
 	fout.open("data");
@@ -18,6 +20,7 @@ void record(int data[][3], int log[]) {
 	}
 
 }
+
 //returns a number of sticks to take based on the number of sticks on the board
 int decide(int sticks, int data[][3]) {
 
@@ -73,7 +76,7 @@ void runGame(int sticks){
 		else { std::cout << "2"; }
 		std::cout << " wins!" << std::endl;
 	}
-
+/*
 	//vs ai
 	else {
 		while (sticks > 0) {
@@ -99,10 +102,10 @@ void runGame(int sticks){
 			record(data, log);
 		}
 	}
+*/
 }
 
 int main(){
 
-	runGame(20);
 	return 0;
 }
