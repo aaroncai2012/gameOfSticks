@@ -29,7 +29,7 @@ int decide(int sticks, int data[][3]) {
 		total = data[sticks][i] + total;
 	}
 	int decision = (rand() % total);
-	if(decision <= data[sticks][0]) { return 1; }
+	if(decision < data[sticks][0]) { return 1; }
 	else if ((total - decision) <= data[sticks][2]) { return 3; }
 	else { return 2; }
 
