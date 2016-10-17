@@ -2,7 +2,7 @@ compile : source.cpp
 	g++ $^ -o game.exe
 
 clean : source.cpp
-	rm game.exe 
+	rm *.exe 
 
-setup : data.cpp
-	g++ $^ -o setup.exe
+reset : data.cpp
+	g++ $^ -o reset.exe

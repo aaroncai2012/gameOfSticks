@@ -24,6 +24,14 @@ void record(int data[][3], int log[]) {
 //returns a number of sticks to take based on the number of sticks on the board
 int decide(int sticks, int data[][3]) {
 
+	int total = 0;
+	for(int i = 0; i < 3; ++i) {
+		total = data[sticks][i] + total;
+	}
+	int decision = (rand() % total);
+	if(decision <= data[sticks][0]) { return 1; }
+	else if ((total - decision) <= data[sticks][2]) { return 3; }
+	else { return 2; }
 
 }
 
@@ -76,7 +84,7 @@ void runGame(int sticks){
 		else { std::cout << "2"; }
 		std::cout << " wins!" << std::endl;
 	}
-/*
+
 	//vs ai
 	else {
 		while (sticks > 0) {
@@ -90,22 +98,24 @@ void runGame(int sticks){
 			}
 			sticks = sticks - input;
 			if (sticks > 0) { 
-				int decision = decide(sticks);
+				int decision = decide(sticks, data);
 				log[sticks] = decision;
 				sticks = sticks - decision; 
-				isPlayerTurn = false; }
+				isPlayerTurn = false; 
 				std::cout << std::endl << "The AI takes " << decision << " sticks." << std::endl;
+			}
 		}
-		if(isPlayerTurn) { std::cout << "Player wins!" << std::endl; }
+		if(!isPlayerTurn) { std::cout << "Player wins!" << std::endl; }
 		else { 
 			std::cout << "AI wins!" << std::endl; 
 			record(data, log);
 		}
 	}
-*/
+
 }
 
 int main(){
 
+	runGame(20);
 	return 0;
 }
