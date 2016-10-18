@@ -1,3 +1,13 @@
+/*
+
+
+Game of Sticks
+by Aaron Cai
+
+
+*/
+
+
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
@@ -35,9 +45,52 @@ int decide(int sticks, int data[][3]) {
 
 }
 
-void runGame(int sticks){
+void trainAI(int iterations) {
+
+	int sticks;
+	std::ifstream fin;
+	fin.open("data");
+	int data[20][3];
+	bool turn;
+	int log1[20];
+	int log2[20];
+	for(int i = 0; i < 20; ++i) {
+		for(int j = 0; j < 3; ++j) {
+			fin >> data[i][j];
+		}
+	}
+	fin.close();
+	for(int i = 0; i < iterations; ++i) {
+		turn = true;
+		sticks = true;
+		for(int i = 0; i < 20; ++i) { log1[i] = 0; }
+		for(int i = 0; i < 20; ++i) { log2[i] = 0; }
+		while (sticks > 0) {
+			
+		}
+	}
+
+}
+
+//resets data file
+void resetData() {
+	
+	std::ofstream fout;
+	fout.open("data");
+	for(int i = 0; i < 20; ++i) {
+		for(int j = 0; j < 3; ++j) {
+			fout << 1 << ' ';
+		}
+		fout << std::endl;
+	}	
+	fout.close();	
+
+}
+
+void runGame() {
 
 	//initializing variables
+	int sticks = 20;
 	std::ifstream fin;
 	fin.open("data");
 	int data[20][3];
@@ -114,8 +167,8 @@ void runGame(int sticks){
 
 }
 
-int main(){
+int main() {
 
-	runGame(20);
+	runGame();
 	return 0;
 }
