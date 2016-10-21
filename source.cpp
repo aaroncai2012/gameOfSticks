@@ -52,22 +52,25 @@ void trainAI(int iterations) {
 	fin.open("data");
 	int data[20][3];
 	bool turn;
-	int log1[20];
-	int log2[20];
-	for(int i = 0; i < 20; ++i) {
-		for(int j = 0; j < 3; ++j) {
-			fin >> data[i][j];
-		}
-	}
+	int log[2][20];
+	int decision;
 	fin.close();
 	for(int i = 0; i < iterations; ++i) {
-		turn = true;
-		sticks = true;
-		for(int i = 0; i < 20; ++i) { log1[i] = 0; }
-		for(int i = 0; i < 20; ++i) { log2[i] = 0; }
-		while (sticks > 0) {
-			
+		for(int i = 0; i < 20; ++i) {
+			for(int j = 0; j < 3; ++j) {
+				fin >> data[i][j];
+			}
 		}
+		turn = true;
+		sticks = 20;
+		for(int i = 0; i < 20; ++i) { log[0][i] = 0; log[1][i] = 0; }
+		while (sticks > 0) {
+			decision = decide(sticks, data);
+			log[turn][sticks] = decision; 
+			sticks = sticks - decision;
+			turn = !turn; 
+		}
+		record(data, log[turn]);
 	}
 
 }
@@ -169,6 +172,7 @@ void runGame() {
 
 int main() {
 
-	runGame();
+	resetData();
+	trainAI(10);
 	return 0;
 }
