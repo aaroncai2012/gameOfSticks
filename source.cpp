@@ -12,101 +12,71 @@ by Aaron Cai
 #include <cstdlib>
 #include <fstream>
 
-//modifies data in the case that the AI wins
-void record(int data[][3], int log[]) {
-	
-	for(int i = 0; i < 20; i++) {
-		if(log[i] != 0){
-			++data[i][log[i] - 1];
-		}
-	}
-	std::ofstream fout;
-	fout.open("data");
-	for(int i = 0; i < 20; ++i) {
-		for(int j = 0; j < 3; ++j) {
-			fout << data[i][j] << ' ';
-		}
-		fout << std::endl;
-	}
+struct log {
 
-}
+	int data[20][3];
+
+};
 
 //returns a number of sticks to take based on the number of sticks on the board
-int decide(int sticks, int data[][3]) {
+int decide(int sticks, log data) {
 
 	int total = 0;
 	for(int i = 0; i < 3; ++i) {
-		total = data[sticks][i] + total;
+		total = data.data[sticks][i] + total;
 	}
 	int decision = (rand() % total);
-	if(decision < data[sticks][0]) { return 1; }
-	else if ((total - decision) <= data[sticks][2]) { return 3; }
+	if(decision < data.data[sticks][0]) { return 1; }
+	else if ((total - decision) <= data.data[sticks][2]) { return 3; }
 	else { return 2; }
 
 }
 
-void trainAI(int iterations) {
+log trainAI(int iterations) {
 
 	int sticks;
-	std::ifstream fin;
-	fin.open("data");
-	int data[20][3];
+	log data;
+	log record[2];
+	for(int i = 0; i < 20; ++i) {
+		for(int j = 0; j < 3; ++j) {
+			data.data[i][j] = 0;
+		}
+	}
 	bool turn;
-	int log[2][20];
 	int decision;
-	fin.close();
 	for(int i = 0; i < iterations; ++i) {
 		for(int i = 0; i < 20; ++i) {
 			for(int j = 0; j < 3; ++j) {
-				fin >> data[i][j];
+				record[0].data[i][j] = 0;
+				record[1].data[i][j] = 0;
 			}
-		}
+		}	
 		turn = true;
 		sticks = 20;
-		for(int i = 0; i < 20; ++i) { log[0][i] = 0; log[1][i] = 0; }
 		while (sticks > 0) {
 			decision = decide(sticks, data);
-			log[turn][sticks] = decision; 
+			record[turn].data[sticks][decision]++;  
 			sticks = sticks - decision;
 			turn = !turn; 
 		}
-		record(data, log[turn]);
+		for(int i = 0; i < 20; ++i) {
+			for(int j = 0; j < 3; ++j) {
+				if(record[turn].data[i][j] == 1) {
+					data.data[i][j]++;
+				}
+			}
+		}
 	}
 
 }
 
-//resets data file
-void resetData() {
-	
-	std::ofstream fout;
-	fout.open("data");
-	for(int i = 0; i < 20; ++i) {
-		for(int j = 0; j < 3; ++j) {
-			fout << 1 << ' ';
-		}
-		fout << std::endl;
-	}	
-	fout.close();	
-
-}
 
 void runGame() {
 
 	//initializing variables
 	int sticks = 20;
-	std::ifstream fin;
-	fin.open("data");
-	int data[20][3];
-	for(int i = 0 ; i < 20; ++i) {
-		for(int j = 0; j < 3; ++j) {
-			fin >> data[i][j];
-		}
-	}	
-	fin.close();
-
 	bool isPlayerTurn = true;
 	int option = 3;
-	int log[20];	for(int i = 0; i < 20; ++i) { log[i] = 0; }
 
 	//introduction
 	std::cout << "Welcome to the game of sticks!" << std::endl;
@@ -143,6 +113,15 @@ void runGame() {
 
 	//vs ai
 	else {
+		log data;
+		log record;
+		for(int i = 0 ; i < 20; ++i) {
+			for(int j = 0; j < 3; ++j) {
+				data.data[i][j] = 1;
+				record.data[i][j] = 1;
+			}
+		}	
+
 		while (sticks > 0) {
 			isPlayerTurn = true;
 			int input = 4;
@@ -155,7 +134,7 @@ void runGame() {
 			sticks = sticks - input;
 			if (sticks > 0) { 
 				int decision = decide(sticks, data);
-				log[sticks] = decision;
+				record.data[sticks][decision]++;
 				sticks = sticks - decision; 
 				isPlayerTurn = false; 
 				std::cout << std::endl << "The AI takes " << decision << " sticks." << std::endl;
@@ -164,7 +143,6 @@ void runGame() {
 		if(!isPlayerTurn) { std::cout << "Player wins!" << std::endl; }
 		else { 
 			std::cout << "AI wins!" << std::endl; 
-			record(data, log);
 		}
 	}
 
@@ -172,7 +150,6 @@ void runGame() {
 
 int main() {
 
-	resetData();
-	trainAI(10);
+	runGame();
 	return 0;
 }
