@@ -1,8 +1,5 @@
-compile : source.cpp
+source : source.cpp
 	g++ $^ -o game.exe
 
-clean : source.cpp
+clean :
 	rm *.exe 
-
-reset : data.cpp
-	g++ $^ -o reset.exe

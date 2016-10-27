@@ -39,7 +39,7 @@ log trainAI(int iterations) {
 	log record[2];
 	for(int i = 0; i < 20; ++i) {
 		for(int j = 0; j < 3; ++j) {
-			data.data[i][j] = 0;
+			data.data[i][j] = 1;
 		}
 	}
 	bool turn;
@@ -53,21 +53,24 @@ log trainAI(int iterations) {
 		}	
 		turn = true;
 		sticks = 20;
+
 		while (sticks > 0) {
 			decision = decide(sticks, data);
 			record[turn].data[sticks][decision]++;  
 			sticks = sticks - decision;
 			turn = !turn; 
 		}
+		
 		for(int i = 0; i < 20; ++i) {
 			for(int j = 0; j < 3; ++j) {
-				if(record[turn].data[i][j] == 1) {
+				if(record[turn].data[i][j]) {
 					data.data[i][j]++;
 				}
 			}
 		}
 	}
 
+	return data;
 }
 
 
@@ -76,14 +79,17 @@ void runGame() {
 	//initializing variables
 	int sticks = 20;
 	bool isPlayerTurn = true;
-	int option = 3;
+	int option = 4;
 
 	//introduction
 	std::cout << "Welcome to the game of sticks!" << std::endl;
-	std::cout << "Would you like to play against a friend (option 1) or the computer (option 2)?" << std::endl;
+	std::cout << "Options:" << std::endl;
+	std::cout << " Play against a friend (1)" << std::endl;
+	std::cout << " Play agains the computer (2)" << std::endl;
+	std::cout << " Play against the trained computer (3)" << std::endl;
 
-	while(option != 1 && option != 2){
-		std::cout << "Which option do you take (1-2)?";
+	while(option != 1 && option != 2 && option != 3){
+		std::cout << "Which option do you take (1-3)?";
 		std::cin >> option;
 		std::cout << std::endl;
 	}
@@ -149,7 +155,7 @@ void runGame() {
 }
 
 int main() {
-
-	runGame();
+	log test;
+	test = trainAI(1);	
 	return 0;
 }
