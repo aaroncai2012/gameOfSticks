@@ -4,7 +4,6 @@
 Game of Sticks
 by Aaron Cai
 
-bogu has looked at this!
 */
 
 
@@ -23,11 +22,11 @@ int decide(int sticks, log data) {
 
 	int total = 0;
 	for(int i = 0; i < 3; ++i) {
-		total = data.data[sticks][i] + total;
+		total = data.data[sticks - 1][i] + total;
 	}
 	int decision = (rand() % total);
-	if(decision < data.data[sticks][0]) { return 1; }
-	else if ((total - decision) <= data.data[sticks][2]) { return 3; }
+	if(decision < data.data[sticks - 1][0]) { return 1; }
+	else if ((total - decision) <= data.data[sticks - 1][2]) { return 3; }
 	else { return 2; }
 
 }
@@ -54,13 +53,15 @@ log trainAI(int iterations) {
 		turn = true;
 		sticks = 20;
 
+
 		while (sticks > 0) {
 			decision = decide(sticks, data);
-			record[turn].data[sticks][decision]++;  
+			record[turn].data[sticks - 1][decision - 1]++;  
 			sticks = sticks - decision;
-			turn = !turn; 
+			turn = !turn;
 		}
 		
+	
 		for(int i = 0; i < 20; ++i) {
 			for(int j = 0; j < 3; ++j) {
 				if(record[turn].data[i][j]) {
@@ -73,7 +74,6 @@ log trainAI(int iterations) {
 	return data;
 }
 
-
 void runGame() {
 
 	//initializing variables
@@ -85,7 +85,7 @@ void runGame() {
 	std::cout << "Welcome to the game of sticks!" << std::endl;
 	std::cout << "Options:" << std::endl;
 	std::cout << " Play against a friend (1)" << std::endl;
-	std::cout << " Play agains the computer (2)" << std::endl;
+	std::cout << " Play against the computer (2)" << std::endl;
 	std::cout << " Play against the trained computer (3)" << std::endl;
 
 	while(option != 1 && option != 2 && option != 3){
@@ -118,7 +118,7 @@ void runGame() {
 	}
 
 	//vs ai
-	else {
+	if(option == 2) {
 		log data;
 		log record;
 		for(int i = 0 ; i < 20; ++i) {
@@ -152,10 +152,39 @@ void runGame() {
 		}
 	}
 
+	//vs trained AI
+	else { 
+		log data;
+		std::cout << "Training AI..." << std::endl;
+		data = trainAI(500);
+		while (sticks > 0) {
+			isPlayerTurn = true;
+			int input = 4;
+			while (input > 3 || input < 0) {
+				std::cout << "There are " << sticks << " sticks on the board." << std::endl;
+				std::cout << "Player: How many sticks do you take (1-3) ";
+				std::cin >> input;
+				std::cout << std::endl;
+			}
+			sticks = sticks - input;
+			if (sticks > 0) { 
+				int decision = decide(sticks, data);
+				sticks = sticks - decision; 
+				isPlayerTurn = false; 
+				std::cout << std::endl << "The AI takes " << decision << " sticks." << std::endl;
+			}
+		}
+		if(!isPlayerTurn) { std::cout << "Player wins!" << std::endl; }
+		else { 
+			std::cout << "AI wins!" << std::endl; 
+		}
+	}
+
 }
 
 int main() {
-	log test;
-	test = trainAI(1);	
+//	log test;
+//	test = trainAI(50);
+	runGame();
 	return 0;
 }
